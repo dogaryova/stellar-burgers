@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import styles from './profile-menu.module.css';
 import { NavLink } from 'react-router-dom';
 import { ProfileMenuUIProps } from './type';
+import styles from './profile-menu.module.css';
 
 export const ProfileMenuUI: FC<ProfileMenuUIProps> = ({
   pathname,

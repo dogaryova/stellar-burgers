@@ -13,3 +13,12 @@
 .orders {
   width: 100%;
 }
+
+.informerWrapper {
+  width: 100%;
+  max-width: 700px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

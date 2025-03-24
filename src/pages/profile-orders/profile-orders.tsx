@@ -1,10 +1,19 @@
+import { FC, useEffect } from 'react';
+import {
+  fetchOrders,
+  selectOrdersLoadingStatus,
+  selectOrdersData
+} from '@slices';
+import { useDispatch, useSelector } from '../../services/store';
 import { ProfileOrdersUI } from '@ui-pages';
-import { TOrder } from '@utils-types';
-import { FC } from 'react';
 
 export const ProfileOrders: FC = () => {
-  /** TODO: взять переменную из стора */
-  const orders: TOrder[] = [];
+  const ordersIsLoading = useSelector(selectOrdersLoadingStatus);
+  const dispatch = useDispatch();
+  const ourOrders = useSelector(selectOrdersData);
+  useEffect(() => {
+    dispatch(fetchOrders());
+  }, []);
 
-  return <ProfileOrdersUI orders={orders} />;
+  return <ProfileOrdersUI loading={ordersIsLoading} orders={ourOrders} />;
 };
