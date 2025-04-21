@@ -1,0 +1,16 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  border-radius: 6px;
+  max-width: 500px;
+}
+
+.bgError {
+  background-color: rgb(236, 55, 55);
+}
+
+.bgDefault {
+  background-color: rgb(163, 163, 255);
+}
