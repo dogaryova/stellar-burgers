@@ -1,3 +1,6 @@
+
+
+
 .wrapper {
   display: flex;
   justify-content: center;
@@ -14,3 +17,4 @@
 .bgDefault {
   background-color: rgb(163, 163, 255);
 }
+

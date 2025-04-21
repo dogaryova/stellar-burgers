@@ -1,19 +1,17 @@
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
-
-import { Informer, Preloader } from '@ui';
-import { useDispatch, useSelector } from '../../services/store';
 import { ProfileUI } from '@ui-pages';
-
+import { Informer, Preloader } from '@ui';
 import {
   updateUser,
   selectUserUpdateError,
   selectUserData,
   selectUserLoadingStatus
 } from '@slices';
+import { useDispatch, useSelector } from '../../services/store';
 
 export const Profile: FC = () => {
   const dispatch = useDispatch();
-  const userIsLoading = useSelector(selectUserLoadingStatus);
+  const userLoading = useSelector(selectUserLoadingStatus);
 
   const user = useSelector(selectUserData);
   const updateError = useSelector(selectUserUpdateError);
@@ -23,16 +21,6 @@ export const Profile: FC = () => {
     email: user ? user.email : '',
     password: ''
   });
-
-  const isFormChanged =
-    formValue.name !== user?.name ||
-    formValue.email !== user?.email ||
-    !!formValue.password;
-
-  const handleSubmit = (e: SyntheticEvent) => {
-    e.preventDefault();
-    dispatch(updateUser(formValue));
-  };
 
   useEffect(() => {
     if (user) {
@@ -44,11 +32,14 @@ export const Profile: FC = () => {
     }
   }, [user]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormValue((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value
-    }));
+  const isFormChanged =
+    formValue.name !== user?.name ||
+    formValue.email !== user?.email ||
+    !!formValue.password;
+
+  const handleSubmit = (e: SyntheticEvent) => {
+    e.preventDefault();
+    dispatch(updateUser(formValue));
   };
 
   const handleCancel = (e: SyntheticEvent) => {
@@ -60,16 +51,23 @@ export const Profile: FC = () => {
     });
   };
 
-  if (userIsLoading) return <Preloader />;
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormValue((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  if (userLoading) return <Preloader />;
 
   return (
     <>
       <ProfileUI
         formValue={formValue}
-        handleInputChange={handleInputChange}
         isFormChanged={isFormChanged}
         handleCancel={handleCancel}
         handleSubmit={handleSubmit}
+        handleInputChange={handleInputChange}
       />
       {updateError && <Informer>{updateError}</Informer>}
     </>
