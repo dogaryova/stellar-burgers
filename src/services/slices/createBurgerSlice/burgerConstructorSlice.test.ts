@@ -4,9 +4,10 @@ import {
   deleteItem,
   upItem,
   downItem,
-  clearItem,
+  clearItem
 } from './createBurgerSlice';
 import { TConstructorIngredient } from '@utils-types';
+import { initialState } from './createBurgerSlice';
 
 const sampleBun: TConstructorIngredient = {
   _id: '60666c42cc7b410027a1a9b1',
@@ -53,20 +54,19 @@ const ingredientTwo: TConstructorIngredient = {
   id: 'filling-2'
 };
 
-const initialState = {
-  bun: null,
-  ingredients: []
-};
-
 describe('burgerConstructorSlice reducer', () => {
   test('should handle initial state', () => {
-    expect(burgerConstructorReducer(undefined, { type: '' })).toEqual(initialState);
+    expect(burgerConstructorReducer(undefined, { type: '' })).toEqual(
+      initialState
+    );
   });
 
   test('should handle addItem (bun)', () => {
     const action = addItem(sampleBun);
     const nextState = burgerConstructorReducer(initialState, action);
-    expect(nextState.bun).toEqual(expect.objectContaining({ _id: sampleBun._id }));
+    expect(nextState.bun).toEqual(
+      expect.objectContaining({ _id: sampleBun._id })
+    );
   });
 
   test('should handle addItem (main)', () => {

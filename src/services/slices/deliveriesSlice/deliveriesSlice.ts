@@ -8,7 +8,7 @@ type TInitialState = {
 };
 export const fetchOrders = createAsyncThunk('orders/fetchOrders', getOrdersApi);
 
-const initialState: TInitialState = {
+export const initialState: TInitialState = {
   error: null,
   isLoading: false,
 

@@ -11,6 +11,8 @@ import { ingredientsReducer } from './burgerContentSlice';
 
 import type { TConstructorIngredient } from '@utils-types';
 
+import {initialState} from './burgerContentSlice'
+
 const sampleBun: TConstructorIngredient = {
   _id: '60666c42cc7b410027a1a9b1',
   name: 'Краторная булка N-200i',
@@ -122,16 +124,11 @@ describe('burgerConstructorReducer', () => {
 });
 
 describe('ingredientsReducer', () => {
-  const ingredientsInitialState = {
-    ingredients: [],
-    isLoading: false,
-    error: null
-  };
 
   const mockPayload = [sampleBun, ingredientOne, ingredientTwo];
 
   test('Загрузка ингредиентов выполнена (fulfilled)', () => {
-    const nextState = ingredientsReducer(ingredientsInitialState, {
+    const nextState = ingredientsReducer(initialState, {
       type: 'ingredients/fetchIngredients/fulfilled',
       payload: mockPayload
     });
@@ -141,7 +138,7 @@ describe('ingredientsReducer', () => {
   });
 
   test('Идёт загрузка ингредиентов (pending)', () => {
-    const nextState = ingredientsReducer(ingredientsInitialState, {
+    const nextState = ingredientsReducer(initialState, {
       type: 'ingredients/fetchIngredients/pending'
     });
     expect(nextState.isLoading).toBe(true);
@@ -149,7 +146,7 @@ describe('ingredientsReducer', () => {
   });
 
   test('Ошибка при загрузке (rejected)', () => {
-    const nextState = ingredientsReducer(ingredientsInitialState, {
+    const nextState = ingredientsReducer(initialState, {
       type: 'ingredients/fetchIngredients/rejected',
       error: { message: 'Ошибка загрузки' }
     });

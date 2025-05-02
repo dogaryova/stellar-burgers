@@ -1,17 +1,6 @@
 import { userReducer as authSlice } from './clientApiSlice';
+import {initialState} from './clientApiSlice'
 
-const initialState = {
-  loginError: null,
-  registerError: null,
-  checkAuthError: null,
-  isAuthChecked: false,
-  isAuthenticated: false,
-  logoutError: null,
-  updateUserError: null,
-  forgotPasswordError: null,
-  userData: null,
-  isLoading: false
-};
 import {
   logoutUser,
   checkUserAuth,

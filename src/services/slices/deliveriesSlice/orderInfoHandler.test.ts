@@ -1,4 +1,5 @@
 import { ordersReducer } from '../deliveriesSlice';
+import { initialState } from './deliveriesSlice';
 
 const sampleOrder = {
   _id: '65d0b04397ede0001d05c948',
@@ -24,12 +25,6 @@ const rejectedAction = {
 
 const pendingAction = {
   type: 'orders/fetchOrders/pending'
-};
-
-const initialState = {
-  isLoading: false,
-  error: null,
-  orders: []
 };
 
 describe('ordersReducer', () => {

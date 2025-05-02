@@ -25,7 +25,7 @@ type TInitialState = {
   logoutError: string | null;
 };
 
-const initialState: TInitialState = {
+export const initialState: TInitialState = {
   logoutError: null,
   updateUserError: null,
 

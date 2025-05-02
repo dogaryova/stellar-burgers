@@ -10,7 +10,7 @@ type TInitialState = {
   ingredients: TIngredient[];
 };
 
-const initialState: TInitialState = {
+export const initialState: TInitialState = {
   error: null,
 
   ingredients: [],
