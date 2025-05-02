@@ -1,7 +1,7 @@
 import { FC, SyntheticEvent, useState } from 'react';
 import { RegisterUI } from '@ui-pages';
 import { useDispatch, useSelector } from '../../services/store';
-import { registerUser } from '../../services/slices/customerApiStore/apiLayer';
+import { registerUser } from '../../services/slices/clientApiSlice/sliceApi';
 import {
   selectIsUserAuthenticated,
   selectRegisterError,

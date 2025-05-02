@@ -1,9 +1,9 @@
 export {
-  listSelecors,
   errorSelector,
-  itemDataSelect,
   itemLoad,
+  itemDataSelect,
   feedsReducer,
   itemListSelect,
+  listSelecors,
   fetchFeeds
-} from './productItems';
+} from './items';

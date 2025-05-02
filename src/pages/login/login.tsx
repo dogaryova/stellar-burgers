@@ -5,16 +5,16 @@ import {
   selectLoginError,
   selectUserLoadingStatus
 } from '@slices';
+import { useDispatch, useSelector } from '../../services/store';
+import { loginUser } from '../../services/slices/clientApiSlice/sliceApi';
 import { Navigate } from 'react-router-dom';
 
-import { loginUser } from '../../services/slices/customerApiStore/apiLayer';
-import { useDispatch, useSelector } from '../../services/store';
 export const Login: FC = () => {
-  const isError = useSelector(selectLoginError);
-  const isLoad = useSelector(selectUserLoadingStatus);
   const dispatch = useDispatch();
 
   const isAuthenticated = useSelector(selectIsUserAuthenticated);
+  const error = useSelector(selectLoginError);
+  const isLoading = useSelector(selectUserLoadingStatus);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,13 +33,13 @@ export const Login: FC = () => {
 
   return (
     <LoginUI
-      isLoading={isLoad}
-      setPassword={setPassword}
-      handleSubmit={handleSubmit}
-      errorText={isError}
+      isLoading={isLoading}
+      errorText={error}
       email={email}
       setEmail={setEmail}
       password={password}
+      setPassword={setPassword}
+      handleSubmit={handleSubmit}
     />
   );
 };

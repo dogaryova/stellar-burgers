@@ -1,7 +1,7 @@
 export {
+  burgerErrorS,
   burgerLoadSelector,
-  ingredientsReducer,
   burgerIngredientsSelector,
   fetchIngredients,
-  burgerErrorS
-} from './burgerPartsStore';
+  ingredientsReducer
+} from './burgerContentSlice';

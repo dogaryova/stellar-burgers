@@ -1,4 +1,5 @@
 import { FC, useState, SyntheticEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ForgotPasswordUI } from '@ui-pages';
 import {
   forgotPassword,
@@ -6,16 +7,14 @@ import {
   selectUserLoadingStatus
 } from '@slices';
 import { useDispatch, useSelector } from '../../services/store';
-import { useNavigate } from 'react-router-dom';
 
 export const ForgotPassword: FC = () => {
-  const isLoading = useSelector(selectUserLoadingStatus);
-  const error = useSelector(selectPasswordResetError);
-  const dispatch = useDispatch();
-
-  const navigate = useNavigate();
-
   const [email, setEmail] = useState('');
+
+  const dispatch = useDispatch();
+  const loading = useSelector(selectUserLoadingStatus);
+  const error = useSelector(selectPasswordResetError);
+  const navigate = useNavigate();
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -36,7 +35,7 @@ export const ForgotPassword: FC = () => {
       email={email}
       setEmail={setEmail}
       handleSubmit={handleSubmit}
-      loading={isLoading}
+      loading={loading}
     />
   );
 };

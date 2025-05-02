@@ -1,40 +1,42 @@
-import { createSlice } from '@reduxjs/toolkit';
-
+import { TUser } from '@utils-types';
 import {
   logoutUser,
-  forgotPassword,
   checkUserAuth,
+  registerUser,
   updateUser,
-  loginUser,
-  registerUser
-} from './apiLayer';
-import { TUser } from '@utils-types';
+  forgotPassword,
+  loginUser
+} from './sliceApi';
+import { createSlice } from '@reduxjs/toolkit';
 
-type TInitlState = {
-  isLoading: boolean;
-  registerError: string | null;
+type TInitialState = {
   isAuthChecked: boolean;
   isAuthenticated: boolean;
-  checkAuthError: string | null;
-  logoutError: string | null;
-  loginError: string | null;
   updateUserError: string | null;
+  isLoading: boolean;
+
   forgotPasswordError: string | null;
   userData: TUser | null;
+
+  loginError: string | null;
+
+  registerError: string | null;
+  checkAuthError: string | null;
+  logoutError: string | null;
 };
 
-const initialState: TInitlState = {
+export const initialState: TInitialState = {
+  logoutError: null,
   updateUserError: null,
-  forgotPasswordError: null,
-  isAuthenticated: false,
-  loginError: null,
-  registerError: null,
-  checkAuthError: null,
+
   userData: null,
   isLoading: false,
+  checkAuthError: null,
   isAuthChecked: false,
-
-  logoutError: null
+  isAuthenticated: false,
+  forgotPasswordError: null,
+  loginError: null,
+  registerError: null
 };
 
 const clientApiSlice = createSlice({
@@ -42,90 +44,99 @@ const clientApiSlice = createSlice({
   initialState,
   reducers: {},
   selectors: {
+    selectAuthCheckError: (state) => state.checkAuthError,
+
+    selectPasswordResetError: (state) => state.forgotPasswordError,
+
+    selectUserLoadingStatus: (state) => state.isLoading,
+
     selectUserData: (state) => state.userData,
-    selectAuthStatusChecked: (state) => state.isAuthChecked,
+
     selectLoginError: (state) => state.loginError,
 
-    selectIsUserAuthenticated: (state) => state.isAuthenticated,
     selectUserUpdateError: (state) => state.updateUserError,
-    selectPasswordResetError: (state) => state.forgotPasswordError,
-    selectRegisterError: (state) => state.registerError,
-    selectAuthCheckError: (state) => state.checkAuthError,
-    selectUserLoadingStatus: (state) => state.isLoading
+
+    selectAuthStatusChecked: (state) => state.isAuthChecked,
+
+    selectIsUserAuthenticated: (state) => state.isAuthenticated,
+
+    selectRegisterError: (state) => state.registerError
   },
   extraReducers: (builder) => {
     builder
+
+      .addCase(registerUser.pending, (state) => {
+        state.isLoading = true;
+        state.registerError = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.isAuthenticated = true;
+        state.isLoading = false;
+        state.userData = action.payload.user;
+        state.isAuthChecked = true;
+      })
+
+      .addCase(loginUser.pending, (state) => {
+        state.isLoading = true;
+        state.loginError = null;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.registerError =
+          action.error.message || 'Не удалось зарегистрироваться';
+        state.isLoading = false;
+        state.isAuthChecked = true;
+      })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isAuthChecked = true;
         state.loginError = action.error.message || 'Не удалось войти в аккаунт';
       })
-      .addCase(registerUser.pending, (state) => {
-        state.isLoading = true;
-        state.registerError = null;
-      })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.isAuthChecked = true;
-        state.registerError =
-          action.error.message || 'Не удалось зарегистрироваться';
-        state.isLoading = false;
-      })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isAuthChecked = true;
+      .addCase(checkUserAuth.fulfilled, (state, action) => {
         state.isAuthenticated = true;
+        state.isLoading = false;
+        state.isAuthChecked = true;
         state.userData = action.payload.user;
       })
-      .addCase(loginUser.pending, (state) => {
-        state.loginError = null;
-        state.isLoading = true;
-      })
-
       .addCase(checkUserAuth.rejected, (state, action) => {
+        state.isAuthChecked = true;
+        state.isLoading = false;
         state.checkAuthError =
           action.error.message ||
           'Ошибка проверки авторизованности пользователя';
-        state.isAuthChecked = true;
-        state.isLoading = false;
       })
 
-      .addCase(logoutUser.pending, (state) => {
-        state.isLoading = true;
-      })
-
-      .addCase(checkUserAuth.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isAuthenticated = true;
-        state.userData = action.payload.user;
-        state.isAuthChecked = true;
-      })
       .addCase(logoutUser.rejected, (state, action) => {
         state.isLoading = false;
         state.logoutError =
           action.error.message || 'Не удалось выйти из аккаунта';
       })
-
+      .addCase(logoutUser.pending, (state) => {
+        state.isLoading = true;
+      })
       .addCase(checkUserAuth.pending, (state) => {
         state.isLoading = true;
         state.checkAuthError = null;
       })
-      .addCase(logoutUser.fulfilled, (state) => {
-        state.isLoading = false;
-        state.isAuthenticated = false;
-        state.isAuthChecked = true;
-        state.userData = null;
-      })
-
       .addCase(registerUser.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.userData = action.payload.user;
         state.isAuthChecked = true;
         state.isAuthenticated = true;
-        state.userData = action.payload.user;
+        state.isLoading = false;
       })
       .addCase(updateUser.pending, (state) => {
         state.isLoading = true;
       })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.userData = null;
+        state.isAuthenticated = false;
+        state.isLoading = false;
 
+        state.isAuthChecked = true;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.userData = action.payload.user;
+      })
       .addCase(forgotPassword.pending, (state) => {
         state.isLoading = true;
       })
@@ -134,32 +145,27 @@ const clientApiSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(updateUser.rejected, (state, action) => {
+        state.isLoading = false;
         state.updateUserError =
           action.error.message || 'Не удалось обновить данные пользователя';
-        state.isLoading = false;
       })
       .addCase(forgotPassword.rejected, (state, action) => {
         state.forgotPasswordError =
           action.error.message || 'Не удалось восстановить пароль';
-        state.isLoading = false;
-      })
-      .addCase(updateUser.fulfilled, (state, action) => {
-        state.userData = action.payload.user;
         state.isLoading = false;
       });
   }
 });
 
 export const {
-  selectAuthCheckError,
   selectUserLoadingStatus,
   selectIsUserAuthenticated,
   selectAuthStatusChecked,
   selectUserData,
   selectRegisterError,
-  selectLoginError,
+  selectPasswordResetError,
+  selectAuthCheckError,
   selectUserUpdateError,
-  selectPasswordResetError
+  selectLoginError
 } = clientApiSlice.selectors;
-
 export const userReducer = clientApiSlice.reducer;

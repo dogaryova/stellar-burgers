@@ -1,21 +1,21 @@
 export {
+  selectLoginError,
+  userReducer,
   selectUserLoadingStatus,
   selectIsUserAuthenticated,
+  selectAuthStatusChecked,
   selectUserData,
   selectUserUpdateError,
   selectPasswordResetError,
   selectAuthCheckError,
-  selectLoginError,
-  selectAuthStatusChecked,
-  userReducer,
   selectRegisterError
-} from './customerApiStore';
+} from './clientApiSlice';
 
 export {
-  logoutUser,
   registerUser,
+  checkUserAuth,
   forgotPassword,
   loginUser,
-  updateUser,
-  checkUserAuth
-} from './apiLayer';
+  logoutUser,
+  updateUser
+} from './sliceApi';

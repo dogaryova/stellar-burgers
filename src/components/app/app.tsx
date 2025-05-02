@@ -1,50 +1,51 @@
 import { useEffect } from 'react';
 import {
-  useNavigate,
-  useParams,
   Route,
   Routes,
   useLocation,
-  useMatch
+  useMatch,
+  useNavigate,
+  useParams
 } from 'react-router-dom';
-import { fetchIngredients } from '@slices';
-import { useDispatch } from '../../services/store';
-import { checkUserAuth } from '../../services/slices/customerApiStore/apiLayer';
-import '../../index.css';
-import styles from './app.module.css';
 import {
-  OrderInfo,
-  IngredientDetails,
   AppHeader,
+  IngredientDetails,
   Modal,
+  OrderInfo,
   ProtectedRoute
 } from '@components';
 import {
   ConstructorPage,
-  ProfileOrders,
   Feed,
   ForgotPassword,
   Login,
   NotFound404,
   Profile,
+  ProfileOrders,
   Register,
   ResetPassword
 } from '@pages';
+import { fetchIngredients } from '@slices';
+import { useDispatch } from '../../services/store';
+import { checkUserAuth } from '../../services/slices/clientApiSlice/sliceApi';
+import '../../index.css';
+import styles from './app.module.css';
 
 const App = () => {
+  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
 
+  const backgroundLocation: Location | undefined = location.state?.background;
   const orderNumberFeed = useMatch('/feed/:number')?.params.number;
   const orderNumberProfile = useMatch('/profile/orders/:number')?.params.number;
-  const backgroundLocation: Location | undefined = location.state?.background;
+
+  useEffect(() => {
+    dispatch(checkUserAuth());
+    dispatch(fetchIngredients());
+  }, [dispatch]);
 
   const onCloseModal = () => navigate(-1);
-  useEffect(() => {
-    dispatch(fetchIngredients());
-    dispatch(checkUserAuth());
-  }, [dispatch]);
 
   return (
     <div className={styles.app}>

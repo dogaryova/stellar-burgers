@@ -1,18 +1,18 @@
-import { TOrder } from '@utils-types';
-import { getOrdersApi } from '@api';
+import { getOrdersApi } from '../../../utils/burger-api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-
-type TInitlState = {
-  error: string | null;
+import { TOrder } from '@utils-types';
+type TInitialState = {
   orders: TOrder[];
   isLoading: boolean;
+  error: string | null;
 };
 export const fetchOrders = createAsyncThunk('orders/fetchOrders', getOrdersApi);
 
-const initialState: TInitlState = {
+export const initialState: TInitialState = {
   error: null,
-  orders: [],
-  isLoading: false
+  isLoading: false,
+
+  orders: []
 };
 
 const deliveriesSlice = createSlice({
@@ -21,24 +21,30 @@ const deliveriesSlice = createSlice({
   reducers: {},
   selectors: {
     selectOrdersLoadingStatus: (state) => state.isLoading,
-    selectOrdersError: (state) => state.error,
-    selectOrdersData: (state) => state.orders
+
+    selectOrdersData: (state) => state.orders,
+
+    selectOrdersError: (state) => state.error
   },
   extraReducers: (builder) => {
     builder
 
-      .addCase(fetchOrders.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchOrders.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.error.message || 'Не удалось загрузить заказы';
-      })
       .addCase(fetchOrders.fulfilled, (state, action) => {
         state.orders = action.payload;
-        state.isLoading = false;
+
         state.error = null;
+        state.isLoading = false;
+      })
+
+      .addCase(fetchOrders.pending, (state) => {
+        state.error = null;
+        state.isLoading = true;
+      })
+
+      .addCase(fetchOrders.rejected, (state, action) => {
+        state.isLoading = false;
+
+        state.error = action.error.message || 'Не удалось загрузить заказы';
       });
   }
 });
@@ -46,7 +52,7 @@ const deliveriesSlice = createSlice({
 export const {
   selectOrdersLoadingStatus,
   selectOrdersData,
+
   selectOrdersError
 } = deliveriesSlice.selectors;
-
 export const ordersReducer = deliveriesSlice.reducer;

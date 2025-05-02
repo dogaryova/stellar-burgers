@@ -1,19 +1,21 @@
-import { TIngredient } from '@utils-types';
-import { getIngredientsApi } from '@api';
-
+import { getIngredientsApi } from '../../../utils/burger-api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { TIngredient } from '@utils-types';
 
-type TInitState = {
+type TInitialState = {
   error: string | null;
-  ingredients: TIngredient[];
+
   isLoading: boolean;
+
+  ingredients: TIngredient[];
 };
 
-const initialState: TInitState = {
-  isLoading: false,
+export const initialState: TInitialState = {
+  error: null,
 
   ingredients: [],
-  error: null
+
+  isLoading: false
 };
 
 export const fetchIngredients = createAsyncThunk(
@@ -27,30 +29,33 @@ const burgerContentSlice = createSlice({
   reducers: {},
   selectors: {
     burgerIngredientsSelector: (state) => state.ingredients,
+
     burgerLoadSelector: (state) => state.isLoading,
 
     burgerErrorS: (state) => state.error
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchIngredients.rejected, (state, action) => {
+
+      .addCase(fetchIngredients.fulfilled, (state, action) => {
+        state.ingredients = action.payload;
         state.isLoading = false;
+        state.error = null;
+      })
+
+      .addCase(fetchIngredients.rejected, (state, action) => {
         state.error =
           action.error.message || 'Не удалось загрузить ингредиенты';
+        state.isLoading = false;
       })
 
       .addCase(fetchIngredients.pending, (state) => {
+        state.error = null;
         state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchIngredients.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.error = null;
-        state.ingredients = action.payload;
       });
   }
 });
 
 export const ingredientsReducer = burgerContentSlice.reducer;
-export const { burgerLoadSelector, burgerIngredientsSelector, burgerErrorS } =
+export const { burgerErrorS, burgerLoadSelector, burgerIngredientsSelector } =
   burgerContentSlice.selectors;

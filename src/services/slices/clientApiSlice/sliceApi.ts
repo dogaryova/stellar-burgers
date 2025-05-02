@@ -1,20 +1,30 @@
-import { setCookie, deleteCookie } from '../../../utils/cookie';
-import { createAsyncThunk } from '@reduxjs/toolkit';
-
 import {
-  forgotPasswordApi,
-  TRegisterData,
   loginUserApi,
   logoutApi,
   registerUserApi,
+  updateUserApi,
   TLoginData,
   getUserApi,
-  updateUserApi
-} from '@api';
+  forgotPasswordApi,
+  TRegisterData
+} from '../../../utils/burger-api';
+
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { setCookie, deleteCookie } from '../../../utils/cookie';
 
 export const USER_EMAIL = 'email';
+
 export const ACCESS_TOKEN_JVT = 'accessToken';
+
 export const REFRESH_TOKEN_JVT = 'refreshToken';
+
+export const forgotPassword = createAsyncThunk(
+  'user/forgotPassword',
+  async (data: { email: string }) => {
+    const response = await forgotPasswordApi(data);
+    return response;
+  }
+);
 
 export const updateUser = createAsyncThunk(
   'user/updateUser',
@@ -23,6 +33,19 @@ export const updateUser = createAsyncThunk(
     return response;
   }
 );
+
+export const registerUser = createAsyncThunk(
+  'user/registerUser',
+  async (data: TRegisterData) => {
+    const response = await registerUserApi(data);
+    localStorage.setItem(REFRESH_TOKEN_JVT, response.refreshToken);
+    setCookie(ACCESS_TOKEN_JVT, response.accessToken);
+
+    return response;
+  }
+);
+
+export const checkUserAuth = createAsyncThunk('user/checkUserAuth', getUserApi);
 
 export const loginUser = createAsyncThunk(
   'user/loginUser',
@@ -36,32 +59,11 @@ export const loginUser = createAsyncThunk(
     return response;
   }
 );
-
-export const registerUser = createAsyncThunk(
-  'user/registerUser',
-  async (data: TRegisterData) => {
-    const response = await registerUserApi(data);
-    setCookie(ACCESS_TOKEN_JVT, response.accessToken);
-    localStorage.setItem(REFRESH_TOKEN_JVT, response.refreshToken);
-    return response;
-  }
-);
-
 export const logoutUser = createAsyncThunk('user/logoutUser', async () => {
+  const response = await logoutApi();
+  localStorage.removeItem(USER_EMAIL);
   localStorage.removeItem(REFRESH_TOKEN_JVT);
 
   deleteCookie(ACCESS_TOKEN_JVT);
-  const response = await logoutApi();
-  localStorage.removeItem(USER_EMAIL);
   return response;
 });
-
-export const forgotPassword = createAsyncThunk(
-  'user/forgotPassword',
-  async (data: { email: string }) => {
-    const response = await forgotPasswordApi(data);
-    return response;
-  }
-);
-
-export const checkUserAuth = createAsyncThunk('user/checkUserAuth', getUserApi);
